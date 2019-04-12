@@ -31,7 +31,7 @@ function geometry(){
   scene.add(light2);
 
   // Create a Cube Mesh with basic material ---------
-  var geometry = new THREE.BoxGeometry(100, 100, 100);
+  var geometry = new THREE.BoxGeometry(50, 100, 50);
 
   // MATERIAL 1:
   //var material = new THREE.MeshBasicMaterial( { color: "#433F81" } );
