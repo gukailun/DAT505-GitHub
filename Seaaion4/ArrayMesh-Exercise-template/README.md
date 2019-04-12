@@ -1,3 +1,8 @@
+# DAT505-GitHub
+
+* In this seaaion,
+
+```javacsript
 var renderer, scene, camera;
 var cubes = [];
 var rot_spd = [];
@@ -71,3 +76,7 @@ function drawFrame(){
 
 init();
 drawFrame();
+
+```
+
+* this code created a console which can see the mouse to change the position of the camera and then randomly moves the meshs in random directions

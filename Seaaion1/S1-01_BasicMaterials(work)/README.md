@@ -1,6 +1,6 @@
 # DAT505-GitHub
 
-* this seaaion is,
+* In this seaaion ,
 
 ```javacsript
 var scene, camera, renderer;
