@@ -1,17 +1,11 @@
-# DAT505-GitHub
-
-* In this seaaion,
-
-```javacsript
 // MatCap-style image rendered on a sphere
 // modify sphere UVs instead of using a ShaderMaterial
-
 var camera, scene, renderer, mesh;
 var image;
 var mouseX = 0, mouseY = 0;
 var container;
 
-var eyesNum = 5;
+var eyesNum = 2;
 var eyes = [];
 var xPos = [];
 var yPos = [];
@@ -20,7 +14,9 @@ var yPosMap = [];
 
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
-
+var listener = new THREE.AudioListener();
+var sound = new THREE.Audio( listener );
+var audioLoader = new THREE.AudioLoader();
 init();
 animate();
 
@@ -39,6 +35,8 @@ function init() {
 	camera.add( light );
 
 	var geometry = new THREE.SphereGeometry( 30, 32, 16 );
+	var geometry1 = new THREE.BoxGeometry( 50,50,3.5 );
+	var texture = new THREE.TextureLoader().load('images/texture1.jpg');
 
 	var material = new THREE.MeshPhongMaterial( {
 		color: 0xffffff,
@@ -46,9 +44,11 @@ function init() {
 		shininess: 50,
 		map: THREE.ImageUtils.loadTexture('images/eye.png'),
 	});
-
-
-  // modify UVs to accommodate MatCap texture
+	var material1 = new THREE.MeshBasicMaterial( { map: texture } );
+	mesh1 = new THREE.Mesh( geometry1, material1 );
+	mesh1.position.set( 0, 0, 0 );
+	scene.add( mesh1 );
+	
 	var faceVertexUvs = geometry.faceVertexUvs[ 0 ];
 	for ( i = 0; i < faceVertexUvs.length; i ++ ) {
 		var uvs = faceVertexUvs[ i ];
@@ -58,37 +58,22 @@ function init() {
 			uvs[ j ].y = face.vertexNormals[ j ].y * 0.5 + 0.5;
 		}
 	}
-
 	for (var i = 0; i < eyesNum; i++) {
 		mesh = new THREE.Mesh( geometry, material );
 
-		xPos[i] = Math.random() * 100 - 50;
-		yPos[i] = Math.random() * 100 - 50;
+		xPos [0] = -9;
+		yPos [0] = -3;
 
-		xPos [0] = 0;
-		yPos [0] = 0;
-
-		xPos [1] = -50;
-		yPos [1] = -50;
-
-		xPos [2] = 50;
-		yPos [2] = -50;
-
-		xPos [3] = -50;
-		yPos [3] = 50;
-
-		xPos [4] = 50;
-		yPos [4] = 50;
+		xPos [1] = 9;
+		yPos [1] = -3;
 
 		xPosMap[i] = map_range(xPos[i], -50, 50, 0, window.innerWidth);
 		yPosMap[i] = map_range(yPos[i], -50, 50, 0, window.innerHeight);
 
-		//console.log(xPosMap[1]);
-
 		mesh.position.x = xPos[i];
 		mesh.position.y = yPos[i];
 
-		var randSize = Math.random() * 0.8;
+		var randSize = 0.1;
 		mesh.scale.x = randSize;
 		mesh.scale.y = randSize;
 		mesh.scale.z = randSize;
@@ -97,8 +82,7 @@ function init() {
 		eyes.push( mesh );
 	}
 
-	//console.log(mesh);
-
+	console.log(mesh);
 	renderer = new THREE.WebGLRenderer();
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -115,32 +99,27 @@ function animate() {
 
 function render() {
 	console.log(mouseY)
+		eyes[0].rotation.x = map_range(mouseY, 0, window.innerWidth, -1.14, 1.14);
+		eyes[1].rotation.x = map_range(mouseY, 0, window.innerWidth, -1.14, 1.14);
 	for (var i = 0; i < eyesNum; i++) {
 
-		eyes[0].rotation.y = map_range(mouseX, 0, window.innerWidth, -1.14, 1.14);
-		eyes[0].rotation.x = map_range(mouseY, 0, window.innerHeight, -1.14, 1.14);
-
-		if (mouseX<140) eyes[1].rotation.y = map_range(mouseX, 0, 140, -0.2, 0.25);
-		else eyes[1].rotation.y = map_range(mouseX, 140, window.innerWidth, 0.25, 1.14);
-		if (mouseY<810) eyes[1].rotation.x = map_range(mouseY, 0, 810, -1.14, -0.25);
-		else eyes[1].rotation.x = map_range(mouseY, 810, window.innerHeight, -0.25, 0);
-
-		if (mouseX<140) eyes[3].rotation.y = map_range(mouseX, 0, 140, -0.2, 0.25);
-		else eyes[3].rotation.y = map_range(mouseX, 140, window.innerWidth, 0.25, 1.14);
-		if (mouseY<35) eyes[3].rotation.x = map_range(mouseY, 0, 35, 0, 0.25);
-		else eyes[3].rotation.x = map_range(mouseY, 35, window.innerHeight, 0.25, 1.14);
-
-    if (mouseX<590) eyes[2].rotation.y = map_range(mouseX, 0, 590, -1.14 , -0.25);
-		else eyes[2].rotation.y = map_range(mouseX, 590, window.innerWidth, -0.25, 0.69 );
-		if (mouseY<810) eyes[2].rotation.x = map_range(mouseY, 0, 810, -1.14, -0.25);
-		else eyes[2].rotation.x = map_range(mouseY, 35, window.innerHeight, -0.25, 0);
-
-		if (mouseX<590) eyes[4].rotation.y = map_range(mouseX, 0, 590, -1.14 , -0.25);
-		else eyes[4].rotation.y = map_range(mouseX, 590, window.innerWidth, -0.25, 0.69 );
-		if (mouseY<35) eyes[4].rotation.x = map_range(mouseY, 0, 35, 0, 0.25);
-		else eyes[4].rotation.x = map_range(mouseY, 35, window.innerHeight, 0.25, 1.14);
+		if (mouseX<400) eyes[0].rotation.y = map_range(mouseX, 0, 400, -0.75, 0);
+		else eyes[0].rotation.y = map_range(mouseX, 400, window.innerWidth, 0, 0.75);
+		if (mouseX<550) eyes[1].rotation.y = map_range(mouseX, 0, 550, -0.75, 0);
+		else eyes[1].rotation.y = map_range(mouseX, 550, window.innerWidth, 0, 0.75);
 
   }
+
+	if ( mouseX > 300 && mouseX < 700 && mouseY > 200 && mouseY < 500) {
+		audioLoader.load( 'audio/10822.wav', function( buffer ) {
+		sound.setBuffer( buffer );
+		sound.setLoop( false );
+		sound.setVolume( 0.5 );
+		sound.play();
+		});
+	} else {}
+
+
 	renderer.render( scene, camera );
 }
 
@@ -148,19 +127,15 @@ function onWindowResize() {
   windowHalfX = window.innerWidth / 2;
   windowHalfY = window.innerHeight / 2;
   camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
   renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
 function onDocumentMouseMove( event ) {
-	//mouseX = event.clientX - windowHalfX;
-  mouseX = event.clientX;
+	mouseX = event.clientX;
   mouseY = event.clientY;
 }
 
 function map_range(value, low1, high1, low2, high2) {
 	return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
 }
-
-```
-
-* This code shows the eye rotation Angle from -1.14 to -0.25 to 1.14 on the X-axis and from 140 to 590 to 810 on the Y-axis to define rotation,Finally, let the five eyes follow the mouse rotation
