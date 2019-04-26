@@ -1,5 +1,6 @@
-### Final Work Cat ###
-
+### KailunGu-DAT505-Assignment ###
+NuaStudent = B161006065
+Name = gukailun
 #### Description ####
 I create BoxGeometry and add cat texture. Then I add 2 eyes on cat that cat will look at the mouse. I also set up to play the sound "mew" when the mouse touches the cat.
 
